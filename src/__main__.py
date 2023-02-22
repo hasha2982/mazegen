@@ -3,7 +3,12 @@ Maze generator and solver written in Python
 Use mazegen -h for help.
 """
 
+from lib.logging import formatter as custom_formatter
+
 import argparse
+
+import colorama as co
+co.init()
 
 LATEST_MANIFEST = 0 # Latest supported manifest version. Use -V to ignore
 
@@ -36,3 +41,12 @@ parser.add_argument(
 )
 
 parser.parse_args()
+
+l = custom_formatter.get_formatted_logger()
+
+# l.debug("Debug")
+# l.info("Info")
+# l.warn("Warning")
+# l.warning("Warning")
+# l.error("Error")
+# l.critical("Critical")
