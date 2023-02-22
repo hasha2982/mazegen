@@ -3,11 +3,12 @@ Maze generator and solver written in Python
 Use mazegen -h for help.
 """
 
-from lib.logging import formatter as custom_formatter
-
 import argparse
 
 import colorama as co
+
+from .lib.logging import formatter as custom_formatter
+
 co.init()
 
 LATEST_MANIFEST = 0 # Latest supported manifest version. Use -V to ignore
