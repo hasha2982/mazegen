@@ -2,7 +2,12 @@
 This module contains a Stream Renderer for mazegen
 """
 
+import sys
+import json
+
 from .base import BaseRenderer
+from .base import RendererFactory as BaseRendererFactory
+
 from ..lib.maze import Maze
 from ..lib.logging import formatter
 
@@ -38,7 +43,7 @@ class StreamRenderer(BaseRenderer):
 
         self.unknown_char = unknown_char
 
-    def maze_to_list(self, maze: Maze):
+    def maze_to_list(self, maze: Maze) -> list:
         """
         Go through all rows and cells of maze, render as strings representing rows, return list with strings
         """
@@ -89,4 +94,38 @@ class StreamRenderer(BaseRenderer):
         for row in rows_list:
             stream.write(row + "\n")
             l.debug("Written %s", row)
-            
+
+    def render(self, maze_obj):
+        rows_list = self.maze_to_list(maze_obj)
+
+        self.write_to_stream(sys.stdout, rows_list)
+        # TODO: Implement writing to different streams with additional args
+
+class RendererFactory(BaseRendererFactory):
+    """
+    Parse args and create StreamRenderer
+    """
+    def create_renderer(self, args: str = "") -> StreamRenderer:
+        parsed_args = json.loads(args) # TODO: add try catch?
+
+        obj = StreamRenderer()
+
+        if "wall_char" in parsed_args:
+            obj.wall_char = str(parsed_args["wall_char"])
+
+        if "empty_char" in parsed_args:
+            obj.empty_char = str(parsed_args["empty_char"])
+
+        if "start_char" in parsed_args:
+            obj.start_char = str(parsed_args["start_char"])
+
+        if "end_char" in parsed_args:
+            obj.end_char = str(parsed_args["end_char"])
+
+        if "solution_char" in parsed_args:
+            obj.solution_char = str(parsed_args["solution_char"])
+
+        if "unknown_char" in parsed_args:
+            obj.unknown_char = str(parsed_args["unknown_char"])
+
+        return obj
