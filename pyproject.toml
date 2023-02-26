@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mazegen"
+version = "0.1.2"
+authors = [
+    {name = "hasha2982", email = "hashadev@yandex.ru"}
+]
+description = "Maze generator and solver written in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+    "colorama"
+]
+
+[tool.setuptools]
+packages = ["mazegen"]
