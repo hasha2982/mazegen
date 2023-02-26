@@ -2,7 +2,12 @@
 This module contains a base renderer for mazegen.
 """
 
-from ..lib import maze
+try:
+    from mazegen.lib import maze
+except ImportError:
+    print("ERROR: Can't import from mazegen.lib! Please install mazegen!")
+
+    raise
 
 class BaseRenderer:
     """
