@@ -1,0 +1,184 @@
+{
+    "manifest": {
+        "version": 0,
+        "mazeWidth": 5,
+        "mazeHeight": 5
+    },
+    "maze": [
+        {
+            "x": 0,
+            "y": 0,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 1,
+            "y": 0,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 0,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 3,
+            "y": 0,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 4,
+            "y": 0,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 0,
+            "y": 1,
+            "empty": true,
+            "start": true,
+            "end": false
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 0,
+            "y": 2,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 1,
+            "y": 2,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 2,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 3,
+            "y": 2,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 4,
+            "y": 2,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 0,
+            "y": 3,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 1,
+            "y": 3,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 3,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 3,
+            "y": 3,
+            "empty": true,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 3,
+            "empty": true,
+            "start": false,
+            "end": true
+        },
+        {
+            "x": 0,
+            "y": 4,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 1,
+            "y": 4,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 2,
+            "y": 4,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 3,
+            "y": 4,
+            "empty": false,
+            "start": false,
+            "end": false
+        },
+        {
+            "x": 4,
+            "y": 4,
+            "empty": false,
+            "start": false,
+            "end": false
+        }
+    ]
+}

@@ -1,2 +1,2 @@
 # mazegen
-Maze generator and solver written in Python
+Maze generator and solver written in Python (WIP)
