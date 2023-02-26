@@ -1,6 +1,6 @@
 {
     "manifest": {
-        "version": 5,
+        "version": 0,
         "mazeWidth": 5,
         "mazeHeight": 5
     },
