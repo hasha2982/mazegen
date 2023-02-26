@@ -11,9 +11,7 @@ import pathlib
 
 import colorama as co
 
-# This works, ignore the error
-from lib.logging import formatter as custom_formatter
-# FIXME: Edit .vscode to extend the import path
+from mazegen.lib.logging import formatter as custom_formatter
 
 co.init() # Init colorama
 
