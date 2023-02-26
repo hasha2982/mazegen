@@ -162,7 +162,15 @@ if __name__ == "__main__":
     match args.mode.lower():
         case "list" | "l":
             l.debug("list mode")
-            list_renderers()
+
+            ### Renderers
+            # l.debug(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+            successful_renderers = list_renderers(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+
+            print(f"Found {len(successful_renderers)} renderer(s) in /renderers/")
+            for renderer in successful_renderers:
+                print(f"\t{renderer['name']} ({renderer['file']})")
+
         case "render" | "r":
             l.debug("render mode")
         case _:
