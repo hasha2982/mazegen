@@ -12,7 +12,7 @@ import pathlib
 import colorama as co
 
 # This works, ignore the error
-from lib.logging import formatter as custom_formatter # pylint: disable=import-error,no-name-in-module
+from lib.logging import formatter as custom_formatter
 # FIXME: Edit .vscode to extend the import path
 
 co.init() # Init colorama
