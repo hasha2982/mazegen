@@ -5,11 +5,14 @@ This module contains a Stream Renderer for mazegen
 import sys
 import json
 
-from .base import BaseRenderer
-from .base import RendererFactory as BaseRendererFactory
+try:
+    from mazegen.lib.renderer_api.base import BaseRenderer
+    from mazegen.lib.renderer_api.base import RendererFactory as BaseRendererFactory
 
-from ..lib.maze import Maze
-from ..lib.logging import formatter
+    from mazegen.lib.maze import Maze
+    from mazegen.lib.logging import formatter
+except ImportError:
+    print("ERROR: Can't import from mazegen.lib! Please install mazegen!")
 
 l = formatter.get_formatted_logger("StreamRenderer")
 
