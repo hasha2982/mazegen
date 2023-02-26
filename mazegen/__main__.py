@@ -99,11 +99,16 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.error("Error")
 # l.critical("Critical")
 
-def list_renderers():
+def list_renderers(directory) -> list:
     """
     Get all .py files in /renderers/ and check if they can be used as renderers
     """
-    renderers_dir = "renderers"
+    renderers_dir = directory
+
+    # Check if dir exists
+    if not pathlib.Path(directory).is_dir():
+        l.error("%s is not a directory. Skipping renderers...")
+        return [] # Return empty list, i.e. no renderers found.
 
     # List of all found .py files
     py_files_list = []
@@ -117,6 +122,8 @@ def list_renderers():
         if os.path.isfile(f) and f.lower().endswith(".py"):
             py_files_list.append(f)
             l.debug("%s is a .py file, appending to list", f)
+
+    valid_modules_list = []
 
     # Try to import and check them
     for file in py_files_list:
@@ -134,9 +141,17 @@ def list_renderers():
             continue
 
         try:
-            factory = module.RendererFactory()
+            _factory = module.RendererFactory()
         except AttributeError as e:
             l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
+            continue
+
+        # If we're here, then the imported module is probably valid.
+        # TODO: add version check?
+
+        valid_modules_list.append({"name": module.__name__, "file": file})
+
+    return valid_modules_list
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
