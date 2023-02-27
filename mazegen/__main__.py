@@ -147,7 +147,7 @@ def list_renderers(directory) -> list:
             continue
 
         # If we're here, then the imported module is probably valid.
-        # TODO: add version check?
+        # TODO: add version check? #12
 
         valid_modules_list.append({"name": module.__name__, "file": file})
 
