@@ -28,8 +28,7 @@ class Maze:
     end_x = 0
     end_y = 0
 
-    def __init__(self, rows, width, height, start_x, start_y, end_x, end_y):
-        # TODO: failsafe if rows is not a dictionary?
+    def __init__(self, rows: dict, width: int, height: int, start_x: int, start_y: int, end_x: int, end_y: int):
         self.rows = rows
 
         self.width = width
