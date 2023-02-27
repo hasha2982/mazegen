@@ -8,8 +8,7 @@ class Maze:
     """
     This class represents a maze.
     """
-    # Defines the width and the height of the maze
-    # TODO: what about the border? does it include it?
+    # Defines the width and the height of the maze, including the border
     width = 0
     height = 0
 
