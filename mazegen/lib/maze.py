@@ -44,7 +44,7 @@ class MazeFactory:
     """
     Contains methods that are used to construct Maze objects.
     """
-    def init_from_json_str(self, json_string, ignore_manifest_version = False):  # FIXME: Limit the amount of data to be parsed!
+    def init_from_json_str(self, json_string, ignore_manifest_version = False):  # FIXME: Limit the amount of data to be parsed! (#13)
         """
         Initialize a new Maze object by parsing a JSON string.
         """
