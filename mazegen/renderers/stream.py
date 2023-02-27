@@ -102,7 +102,7 @@ class StreamRenderer(BaseRenderer):
         rows_list = self.maze_to_list(maze_obj)
 
         self.write_to_stream(sys.stdout, rows_list)
-        # TODO: Implement writing to different streams with additional args
+        # TODO: Implement writing to different streams with additional args (#14)
 
 class RendererFactory(BaseRendererFactory):
     """
