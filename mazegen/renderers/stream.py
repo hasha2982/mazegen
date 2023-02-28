@@ -14,6 +14,8 @@ try:
 except ImportError:
     print("ERROR: Can't import from mazegen.lib! Please install mazegen!")
 
+    raise
+
 l = formatter.get_formatted_logger("StreamRenderer")
 
 class StreamRenderer(BaseRenderer):
