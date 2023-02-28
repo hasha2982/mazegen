@@ -103,6 +103,11 @@ class StreamRenderer(BaseRenderer):
             stream.write(row + "\n")
             l.debug("Written %s", row)
 
+        # Try to close stream
+        if stream is not sys.stdout or sys.stderr:
+            l.debug("%s is not stdout or stderr, closing...")
+            stream.close()
+
     def render(self, maze_obj):
         rows_list = self.maze_to_list(maze_obj)
 
@@ -144,7 +149,7 @@ class RendererFactory(BaseRendererFactory):
                     obj.stream = sys.stdout
                 case "stderr" | "sys.stderr":
                     obj.stream = sys.stderr
-                # case _:
-                #     pass # Open file
+                case _:
+                    obj.stream = open(parsed_args, "a", encoding="utf-8") # Append is the most safe way
 
         return obj
