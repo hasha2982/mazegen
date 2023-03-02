@@ -8,6 +8,7 @@ import os
 import textwrap
 import importlib.util
 import pathlib
+import json
 
 import colorama as co
 
@@ -105,10 +106,9 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.critical("Critical")
 
 # Check functions
-def check_renderers(file):
+def import_renderer(file):
     """
-    Check if file is a valid renderer.
-    If it is, then return its __name__, else return False
+    Try to import a module as a renderer and also check it.
     """
 
     # Try to extract stem from path
@@ -130,7 +130,7 @@ def check_renderers(file):
         l.debug("Imported module has no RendererFactory. (%s)", e)
         return False
 
-    return module.__name__
+    return module
 
 # List functions
 def list_renderers(directory) -> list:
@@ -180,20 +180,27 @@ def list_renderers(directory) -> list:
     #         l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
     #         continue
     for file in py_files_list:
-        result = check_renderers(file)
-        if not result:
+        module = import_renderer(file)
+        if not module:
             l.debug("Check is not successful, skipping")
             continue
 
         # If we're here, then the imported module is probably valid.
         # TODO: add version check? #12
 
-        valid_modules_list.append({"name": result, "file": file})
+        valid_modules_list.append({"name": module.__name__, "file": file})
 
     return valid_modules_list
 
 # Mode functions
-#def render(renderer, maze: maze.Maze):
+def render(renderer_module, maze: maze.Maze):
+    # Create renderer from RendererFactory
+    try:
+        factory = renderer_module.RendererFactory()
+    except AttributeError:
+        l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
+    
+    # Find additional args (if we have any) and parse them
     
 
 if __name__ == "__main__":
