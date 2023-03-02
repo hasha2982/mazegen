@@ -14,8 +14,8 @@ import colorama as co
 try:
     from mazegen.lib.logging import formatter as custom_formatter
     from mazegen.lib import maze
-except ImportError as e:
-    print(f"Can't import mazegen! Please install mazegen with pip or add it to PYTHONPATH before using ({e})")
+except ImportError as exc:
+    print(f"Can't import mazegen! Please install mazegen with pip or add it to PYTHONPATH before using ({exc})")
     raise
 
 co.init() # Init colorama
@@ -110,7 +110,7 @@ def check_renderers(file):
     Check if file is a valid renderer.
     If it is, then return its __name__, else return False
     """
-    
+
     # Try to extract stem from path
     name = pathlib.Path(file).stem
 
