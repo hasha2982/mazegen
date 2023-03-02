@@ -119,6 +119,9 @@ class RendererFactory(BaseRendererFactory):
     Parse args and create StreamRenderer
     """
     def create_renderer(self, args: dict = None) -> StreamRenderer:
+        """
+        Apply args to renderer and return it
+        """
         #parsed_args = json.loads(args)
 
         # Create renderer

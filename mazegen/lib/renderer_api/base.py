@@ -31,7 +31,7 @@ class RendererFactory:
 
     def create_renderer(self, args: dict = None) -> BaseRenderer:
         """
-        Parse the additional args and return Renderer object
+        Create a renderer with applied additional args
         """
 
         print(args)
