@@ -118,38 +118,43 @@ class RendererFactory(BaseRendererFactory):
     """
     Parse args and create StreamRenderer
     """
-    def create_renderer(self, args: str = "") -> StreamRenderer:
-        parsed_args = json.loads(args) # TODO: add try catch?
+    def create_renderer(self, args: dict = None) -> StreamRenderer:
+        #parsed_args = json.loads(args)
 
+        # Create renderer
         obj = StreamRenderer()
 
+        if args is None: # Don't parse the args if args is None
+            return obj
+
+        # Apply args
         # Characters
-        if "wall_char" in parsed_args:
-            obj.wall_char = str(parsed_args["wall_char"])
+        if "wall_char" in args:
+            obj.wall_char = str(args["wall_char"])
 
-        if "empty_char" in parsed_args:
-            obj.empty_char = str(parsed_args["empty_char"])
+        if "empty_char" in args:
+            obj.empty_char = str(args["empty_char"])
 
-        if "start_char" in parsed_args:
-            obj.start_char = str(parsed_args["start_char"])
+        if "start_char" in args:
+            obj.start_char = str(args["start_char"])
 
-        if "end_char" in parsed_args:
-            obj.end_char = str(parsed_args["end_char"])
+        if "end_char" in args:
+            obj.end_char = str(args["end_char"])
 
-        if "solution_char" in parsed_args:
-            obj.solution_char = str(parsed_args["solution_char"])
+        if "solution_char" in args:
+            obj.solution_char = str(args["solution_char"])
 
-        if "unknown_char" in parsed_args:
-            obj.unknown_char = str(parsed_args["unknown_char"])
+        if "unknown_char" in args:
+            obj.unknown_char = str(args["unknown_char"])
 
         # Stream
-        if "stream" in parsed_args:
-            match parsed_args["stream"]:
+        if "stream" in args:
+            match args["stream"]:
                 case "stdout" | "sys.stdout":
                     obj.stream = sys.stdout
                 case "stderr" | "sys.stderr":
                     obj.stream = sys.stderr
                 case _:
-                    obj.stream = open(parsed_args, "a", encoding="utf-8") # Append is the most safe way
+                    obj.stream = open(args, "a", encoding="utf-8") # Append is the most safe way
 
         return obj

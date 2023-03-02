@@ -29,7 +29,7 @@ class RendererFactory:
     def __init__(self) -> None:
         pass
 
-    def create_renderer(self, args: str = "") -> BaseRenderer:
+    def create_renderer(self, args: dict = None) -> BaseRenderer:
         """
         Parse the additional args and return Renderer object
         """
