@@ -11,7 +11,12 @@ import pathlib
 
 import colorama as co
 
-from mazegen.lib.logging import formatter as custom_formatter
+try:
+    from mazegen.lib.logging import formatter as custom_formatter
+    from mazegen.lib import maze
+except ImportError as e:
+    print(f"Can't import mazegen! Please install mazegen with pip or add it to PYTHONPATH before using ({e})")
+    raise
 
 co.init() # Init colorama
 
@@ -99,6 +104,35 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.error("Error")
 # l.critical("Critical")
 
+# Check functions
+def check_renderers(file):
+    """
+    Check if file is a valid renderer.
+    If it is, then return its __name__, else return False
+    """
+    
+    # Try to extract stem from path
+    name = pathlib.Path(file).stem
+
+    # Import module
+    try:
+        spec = importlib.util.spec_from_file_location(name, file)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        l.debug("Successfully imported %s from %s", name, file)
+    except Exception as e: # pylint: disable=broad-exception-caught
+        l.debug("Can't import %s from %s: unknown error (%s)", name, file, e)
+        return False
+
+    try:
+        _factory = module.RendererFactory()
+    except AttributeError as e:
+        l.debug("Imported module has no RendererFactory. (%s)", e)
+        return False
+
+    return module.__name__
+
+# List functions
 def list_renderers(directory) -> list:
     """
     Get all .py files in /renderers/ and check if they can be used as renderers
@@ -125,33 +159,42 @@ def list_renderers(directory) -> list:
 
     valid_modules_list = []
 
-    # Try to import and check them
+    # # Try to import and check them
+    # for file in py_files_list:
+    #     # Try to extract stem from path
+    #     name = pathlib.Path(file).stem
+
+    #     # Import module
+    #     try:
+    #         spec = importlib.util.spec_from_file_location(name, file)
+    #         module = importlib.util.module_from_spec(spec)
+    #         spec.loader.exec_module(module)
+    #         l.debug("Successfully imported %s from %s", name, file)
+    #     except Exception as e: # pylint: disable=broad-exception-caught
+    #         l.debug("Can't import %s from %s: unknown error (%s). Skipping", name, file, e)
+    #         continue
+
+    #     try:
+    #         _factory = module.RendererFactory()
+    #     except AttributeError as e:
+    #         l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
+    #         continue
     for file in py_files_list:
-        # Try to extract stem from path
-        name = pathlib.Path(file).stem
-
-        # Import module
-        try:
-            spec = importlib.util.spec_from_file_location(name, file)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            l.debug("Successfully imported %s from %s", name, file)
-        except Exception as e: # pylint: disable=broad-exception-caught
-            l.debug("Can't import %s from %s: unknown error (%s). Skipping", name, file, e)
-            continue
-
-        try:
-            _factory = module.RendererFactory()
-        except AttributeError as e:
-            l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
+        result = check_renderers(file)
+        if not result:
+            l.debug("Check is not successful, skipping")
             continue
 
         # If we're here, then the imported module is probably valid.
         # TODO: add version check? #12
 
-        valid_modules_list.append({"name": module.__name__, "file": file})
+        valid_modules_list.append({"name": result, "file": file})
 
     return valid_modules_list
+
+# Mode functions
+#def render(renderer, maze: maze.Maze):
+    
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
