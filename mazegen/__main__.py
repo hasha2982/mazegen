@@ -234,7 +234,7 @@ def render(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     try:
         l.debug("Trying to open file and parse its contents...")
         with open(args.renderer_args, "r", encoding="utf8") as file:
-            try:
+            try: # FIXME: #17 Unnecessary "else" after "return", remove the "else" and de-indent the code inside it pylint(no-else-return)
                 l.debug("Trying to parse contents...")
                 parsed_json = json.loads(file)
             except json.decoder.JSONDecodeError:
@@ -269,6 +269,12 @@ if __name__ == "__main__":
 
         case "render" | "r":
             l.debug("render mode")
+
+            if args.file is None:
+                l.critical("--file argument required for render mode")
+            
+            if args.renderer is None:
+                l.critical("--renderer argument")
         case _:
             l.critical("Unknown mode: %s. Supported modes: render, list. Try -h or --help", args.mode)
     
