@@ -109,6 +109,9 @@ class StreamRenderer(BaseRenderer):
             stream.close()
 
     def render(self, maze_obj):
+        """
+        Render the Maze object
+        """
         rows_list = self.maze_to_list(maze_obj)
 
         self.write_to_stream(self.stream, rows_list)
