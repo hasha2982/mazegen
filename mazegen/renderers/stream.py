@@ -3,7 +3,7 @@ This module contains a Stream Renderer for mazegen
 """
 
 import sys
-import json
+#import json
 
 try:
     from mazegen.lib.renderer_api.base import BaseRenderer
