@@ -59,6 +59,7 @@ parser.add_argument(
 # Render/solve
 parser.add_argument(
     "-f", "--file",
+    type=str,
     help=".json maze file to solve/render (only render/solve)"
 )
 parser.add_argument(
@@ -70,11 +71,13 @@ parser.add_argument(
 # Render args
 parser.add_argument(
     "-r", "--renderer",
+    type=str,
     help="rendering method"
 )
 
 parser.add_argument(
-    "-A", "--renderer-args",
+    "-R", "--renderer-args",
+    type=str,
     help="additional arguments for the renderer. check the renderer docs for supported renderer args."
 )
 
@@ -193,15 +196,58 @@ def list_renderers(directory) -> list:
     return valid_modules_list
 
 # Mode functions
-def render(renderer_module, maze: maze.Maze):
+def render(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
+    """
+    Render maze_obj with renderer_module
+    """
     # Create renderer from RendererFactory
     try:
         factory = renderer_module.RendererFactory()
     except AttributeError:
         l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
-    
-    # Find additional args (if we have any) and parse them
-    
+
+    # Create renderer and render if no additional args
+    if args.additional_args is None:
+        l.debug("additional_args is None, rendering without additional args...")
+        if not factory.create_renderer({}).render(maze_obj):
+            l.error("Couldn't render: renderer returned false")
+
+        return
+
+    # Find additional args and parse them
+    parsed_json = {}
+
+    # Parse as JSON
+    try:
+        l.debug("Trying to parse additional args with json.loads...")
+        parsed_json = json.loads(args.renderer_args)
+    except json.decoder.JSONDecodeError:
+        l.info("Couldn't parse renderer args as JSON, trying to parse as file...", exc_info=True)
+    else:
+        l.debug("Parsing successful!")
+        if not factory.create_renderer(parsed_json).render(maze_obj):
+            l.error("Couldn't render: renderer returned false")
+
+        return
+
+    # Parse as file
+    try:
+        l.debug("Trying to open file and parse its contents...")
+        with open(args.renderer_args, "r", encoding="utf8") as file:
+            try:
+                l.debug("Trying to parse contents...")
+                parsed_json = json.loads(file)
+            except json.decoder.JSONDecodeError:
+                l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
+                return
+            else:
+                l.debug("Parsing successful")
+                if not factory.create_renderer(parsed_json).render(maze_obj):
+                    l.error("Couldn't render: renderer returned false")
+
+                return
+    except OSError:
+        l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
