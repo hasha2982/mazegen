@@ -67,9 +67,9 @@ class StreamRenderer(BaseRenderer):
                 # empty_char if no wall
                 # wall_char if wall
                 # unknown_char if error
-                if maze["rows"][row_id][cell_id] is True:
+                if maze.rows[row_id][cell_id] is True:
                     row_str += self.empty_char
-                elif maze["rows"][row_id][cell_id] is False:
+                elif maze.rows[row_id][cell_id] is False:
                     row_str += self.wall_char
                 else:
                     l.warning("Unknown cell in position (%i, %i). Replacing with '%s'", cell_id, row_id, self.unknown_char)
@@ -105,7 +105,7 @@ class StreamRenderer(BaseRenderer):
 
         # Try to close stream
         if stream is not sys.stdout or sys.stderr:
-            l.debug("%s is not stdout or stderr, closing...")
+            l.debug("%s is not stdout or stderr, closing...", stream)
             stream.close()
 
     def render(self, maze_obj):
@@ -116,6 +116,8 @@ class StreamRenderer(BaseRenderer):
 
         self.write_to_stream(self.stream, rows_list)
         # TODO: Implement writing to different streams with additional args (#14)
+
+        return True
 
 class RendererFactory(BaseRendererFactory):
     """

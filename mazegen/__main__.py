@@ -109,7 +109,7 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.critical("Critical")
 
 # Check functions
-def import_renderer(file):
+def import_renderer(file: str):
     """
     Try to import a module as a renderer and also check it.
     """
@@ -195,8 +195,8 @@ def list_renderers(directory) -> list:
 
     return valid_modules_list
 
-# Mode functions
-def render(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
+# Render functions
+def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     """
     Render maze_obj with renderer_module
     """
@@ -207,8 +207,8 @@ def render(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
         l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
 
     # Create renderer and render if no additional args
-    if args.additional_args is None:
-        l.debug("additional_args is None, rendering without additional args...")
+    if args.renderer_args is None:
+        l.debug("renderer_args is None, rendering without additional args...")
         if not factory.create_renderer({}).render(maze_obj):
             l.error("Couldn't render: renderer returned false")
 
@@ -249,6 +249,57 @@ def render(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     except OSError:
         l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
 
+# Mode functions
+def render_mode():
+    """
+    Called when render mode is selected.
+    """
+
+    # Check args
+    if args.file is None:
+        l.critical("--file argument required for render mode")
+        return
+
+    if args.renderer is None:
+        l.critical("--renderer argument required for render mode")
+        return
+
+    # Check renderer
+    renderer_module = import_renderer(args.renderer)
+
+    if not renderer_module:
+        l.critical("Couldn't import %s!", args.renderer)
+        return
+    
+    # Check file
+    try:
+        with open(args.file, "r", encoding='utf8') as file:
+            maze_str = file.read()
+    except OSError:
+        l.critical("Couldn't open %s! Maybe the file doesn't exist?", args.file, exc_info=True)
+        return
+    
+    # Create maze object
+    try:
+        maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
+    except (TypeError, KeyError, ValueError):
+        l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
+        return
+    
+    render_obj(renderer_module, maze_obj)
+
+def list_mode():
+    """
+    Called when render mode is selected.
+    """
+    ### Renderers
+    # l.debug(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+    successful_renderers = list_renderers(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+
+    print(f"Found {len(successful_renderers)} renderer(s) in /renderers/")
+    for renderer in successful_renderers:
+        print(f"\t{renderer['name']} ({renderer['file']})")
+
 if __name__ == "__main__":
     ## Not required now since mode is positional
     # if args.mode is None:
@@ -258,23 +309,10 @@ if __name__ == "__main__":
     match args.mode.lower():
         case "list" | "l":
             l.debug("list mode")
-
-            ### Renderers
-            # l.debug(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
-            successful_renderers = list_renderers(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
-
-            print(f"Found {len(successful_renderers)} renderer(s) in /renderers/")
-            for renderer in successful_renderers:
-                print(f"\t{renderer['name']} ({renderer['file']})")
-
+            list_mode()
         case "render" | "r":
             l.debug("render mode")
-
-            if args.file is None:
-                l.critical("--file argument required for render mode")
-            
-            if args.renderer is None:
-                l.critical("--renderer argument")
+            render_mode()
         case _:
             l.critical("Unknown mode: %s. Supported modes: render, list. Try -h or --help", args.mode)
     
