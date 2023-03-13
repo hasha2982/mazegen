@@ -270,7 +270,7 @@ def render_mode():
     if not renderer_module:
         l.critical("Couldn't import %s!", args.renderer)
         return
-    
+
     # Check file
     try:
         with open(args.file, "r", encoding='utf8') as file:
@@ -278,14 +278,14 @@ def render_mode():
     except OSError:
         l.critical("Couldn't open %s! Maybe the file doesn't exist?", args.file, exc_info=True)
         return
-    
+
     # Create maze object
     try:
         maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
     except (TypeError, KeyError, ValueError):
         l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
         return
-    
+
     render_obj(renderer_module, maze_obj)
 
 def list_mode():
