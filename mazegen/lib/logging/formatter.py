@@ -7,6 +7,9 @@ import logging
 from colorama import Fore, Style
 
 class CustomFormatter(logging.Formatter):
+    """
+    A class that inherits logging.Formatter. Used to format LogRecords
+    """
     def format(self, record):
         # [E] Error
         # (module) [W] Warning
