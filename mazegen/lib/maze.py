@@ -59,7 +59,7 @@ class MazeFactory:
         # endY = 0
 
         # Parse
-        parsed = json.loads(json_string)
+        parsed = json.loads(json_string) # FIXME: #18 Parse with try-except
 
         # Check if dict
         if not isinstance(parsed, dict):
