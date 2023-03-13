@@ -104,7 +104,7 @@ class StreamRenderer(BaseRenderer):
             l.debug("Written %s", row)
 
         # Try to close stream
-        if stream is not sys.stdout or sys.stderr:
+        if stream is not sys.stdout or sys.stderr: # FIXME: Stream closing even if it's sys.stdout
             l.debug("%s is not stdout or stderr, closing...", stream)
             stream.close()
 
