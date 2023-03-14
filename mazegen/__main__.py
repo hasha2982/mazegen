@@ -282,7 +282,7 @@ def render_mode():
     # Create maze object
     try:
         maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
-    except (TypeError, KeyError, ValueError):
+    except maze.MazeFactoryError:
         l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
         return
 
