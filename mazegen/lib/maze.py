@@ -40,6 +40,25 @@ class Maze:
         self.end_x = end_x
         self.end_y = end_y
 
+class MazeFactoryError(Exception):
+    """
+    Raised when MazeFactory can't create a new Maze object
+
+    Attributes
+        message - The message. Will include sub_exc in it.
+        sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
+    """
+
+    def __init__(self, message: str = "", sub_exc: Exception = Exception) -> None:
+        self.sub_exc = sub_exc
+
+        if sub_exc is not Exception:
+            self.message = f"({sub_exc.__qualname__}) {message}"
+        else:
+            self.message = message
+
+        super().__init__(self.message)
+
 class MazeFactory:
     """
     Contains methods that are used to construct Maze objects.
