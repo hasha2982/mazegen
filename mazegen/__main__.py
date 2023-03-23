@@ -221,7 +221,7 @@ def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     try:
         l.debug("Trying to parse additional args with json.loads...")
         parsed_json = json.loads(args.renderer_args)
-    except json.decoder.JSONDecodeError:
+    except json.JSONDecodeError:
         l.info("Couldn't parse renderer args as JSON, trying to parse as file...", exc_info=True)
     else:
         l.debug("Parsing successful!")
@@ -237,7 +237,7 @@ def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
             try: # FIXME: #17 Unnecessary "else" after "return", remove the "else" and de-indent the code inside it pylint(no-else-return)
                 l.debug("Trying to parse contents...")
                 parsed_json = json.loads(file)
-            except json.decoder.JSONDecodeError:
+            except json.JSONDecodeError:
                 l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
                 return
             else:
