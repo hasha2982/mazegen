@@ -234,18 +234,18 @@ def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     try:
         l.debug("Trying to open file and parse its contents...")
         with open(args.renderer_args, "r", encoding="utf8") as file:
-            try: # FIXME: #17 Unnecessary "else" after "return", remove the "else" and de-indent the code inside it pylint(no-else-return)
+            try:
                 l.debug("Trying to parse contents...")
                 parsed_json = json.loads(file)
             except json.JSONDecodeError:
                 l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
                 return
-            else:
-                l.debug("Parsing successful")
-                if not factory.create_renderer(parsed_json).render(maze_obj):
-                    l.error("Couldn't render: renderer returned false")
 
-                return
+            l.debug("Parsing successful")
+            if not factory.create_renderer(parsed_json).render(maze_obj):
+                l.error("Couldn't render: renderer returned false")
+
+            return
     except OSError:
         l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
 
