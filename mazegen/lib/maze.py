@@ -79,7 +79,10 @@ class MazeFactory:
         # endY = 0
 
         # Parse
-        parsed = json.loads(json_string) # FIXME: #18 Parse with try-except
+        try:
+            parsed = json.loads(json_string) # FIXME: #18 Parse with try-except
+        except json.JSONDecodeError as e:
+            raise MazeFactoryError(f"Couldn't parse maze JSON file: unknown error ({e})", json.JSONDecodeError)
 
         # Check if dict
         if not isinstance(parsed, dict):
