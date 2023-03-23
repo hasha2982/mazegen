@@ -47,6 +47,8 @@ def get_formatted_logger(name = "root"):
     logging_handler.setFormatter(CustomFormatter())
 
     l = logging.getLogger(name)
+    l.propagate = False # Fix #22
+
     l.addHandler(logging_handler)
 
     return l
