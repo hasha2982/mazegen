@@ -64,7 +64,6 @@ class MazeFactory:
     Contains methods that are used to construct Maze objects.
     """
     def init_from_json_str(self, json_string, ignore_manifest_version = False):  # FIXME: Limit the amount of data to be parsed! (#13)
-        # TODO: #19 Use single exception (like JSONDecodeError) instead of TypeError, KeyError, etc.
         """
         Initialize a new Maze object by parsing a JSON string.
         """
@@ -80,7 +79,7 @@ class MazeFactory:
 
         # Parse
         try:
-            parsed = json.loads(json_string) # FIXME: #18 Parse with try-except
+            parsed = json.loads(json_string)
         except json.JSONDecodeError as e:
             raise MazeFactoryError(f"Couldn't parse maze JSON file: unknown error ({e})", json.JSONDecodeError) from e
 
