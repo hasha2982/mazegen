@@ -208,6 +208,8 @@ def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
     except AttributeError:
         l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
 
+        return
+
     # Create renderer and render if no additional args
     if args.renderer_args is None:
         l.debug("renderer_args is None, rendering without additional args...")
