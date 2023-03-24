@@ -5,7 +5,7 @@ Use mazegen -h for help.
 
 import argparse
 import os
-import textwrap
+import textwrap # TODO: #24 textwrap.dedent?
 import importlib.util
 import pathlib
 import json
@@ -136,11 +136,13 @@ def import_renderer(file: str):
     return module
 
 # List functions
-def list_renderers(directory) -> list:
+def list_renderers(directory: str) -> list:
     """
     Get all .py files in /renderers/ and check if they can be used as renderers
     """
-    renderers_dir = directory
+    # TODO: Update docstring
+
+    renderers_dir = directory # TODO: fix this
 
     # Check if dir exists
     if not pathlib.Path(directory).is_dir():
