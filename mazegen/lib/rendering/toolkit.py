@@ -13,9 +13,9 @@ def import_renderer(path: str):
         path: str - path to the module
     
     Returns
-        Module, if the import was successful and all the checks passed
-        False, if the import was not successful or not all checks passed
-        Exception, if an exception has occurred
+        * Module, if the import was successful and all the checks passed
+        * False, if the import was not successful or not all checks passed
+        * Exception, if an exception has occurred
     """
 
     # Extract stem from path
