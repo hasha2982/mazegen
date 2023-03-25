@@ -15,7 +15,7 @@ import colorama as co
 try:
     from mazegen.lib.logging import formatter as custom_formatter
     from mazegen.lib import maze
-except ImportError as exc:
+except (ImportError, ModuleNotFoundError) as exc:
     print(f"Can't import mazegen! Please install mazegen with pip or add it to PYTHONPATH before using ({exc})")
     raise
 
