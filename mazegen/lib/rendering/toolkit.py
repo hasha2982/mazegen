@@ -10,7 +10,7 @@ def import_renderer(path: str):
     could be used as a renderer.
 
     Arguments
-        path: str - path to the module
+        * path: str - path to the module
     
     Returns
         * Module, if the import was successful and all the checks passed

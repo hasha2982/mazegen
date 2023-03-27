@@ -45,8 +45,8 @@ class MazeFactoryError(Exception):
     Raised when MazeFactory can't create a new Maze object
 
     Attributes
-        message - The message. Will include sub_exc in it.
-        sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
+        * message - The message. Will include sub_exc in it.
+        * sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
     """
 
     def __init__(self, message: str = "", sub_exc: Exception = Exception) -> None:
