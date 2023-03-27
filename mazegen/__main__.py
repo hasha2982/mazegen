@@ -106,125 +106,128 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.critical("Critical")
 
 # Check functions
-def import_renderer(file: str):
-    """
-    Try to import a module as a renderer and also check it.
-    """
+# def import_renderer(file: str):
+#     """
+#     Try to import a module as a renderer and also check it.
+#     Deprecated.
+#     """
 
-    # Try to extract stem from path
-    name = pathlib.Path(file).stem
+#     # Try to extract stem from path
+#     name = pathlib.Path(file).stem
 
-    # Import module
-    try:
-        spec = importlib.util.spec_from_file_location(name, file)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        l.debug("Successfully imported %s from %s", name, file)
-    except Exception as e: # pylint: disable=broad-exception-caught
-        l.debug("Can't import %s from %s: unknown error (%s)", name, file, e)
-        return False
+#     # Import module
+#     try:
+#         spec = importlib.util.spec_from_file_location(name, file)
+#         module = importlib.util.module_from_spec(spec)
+#         spec.loader.exec_module(module)
+#         l.debug("Successfully imported %s from %s", name, file)
+#     except Exception as e: # pylint: disable=broad-exception-caught
+#         l.debug("Can't import %s from %s: unknown error (%s)", name, file, e)
+#         return False
 
-    try:
-        _factory = module.RendererFactory()
-    except AttributeError as e:
-        l.debug("Imported module has no RendererFactory. (%s)", e)
-        return False
+#     try:
+#         _factory = module.RendererFactory()
+#     except AttributeError as e:
+#         l.debug("Imported module has no RendererFactory. (%s)", e)
+#         return False
 
-    return module
+#     return module
 
 
-# Render functions
-def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
-    """
-    Render maze_obj with renderer_module
-    """
-    # Create renderer from RendererFactory
-    try:
-        factory = renderer_module.RendererFactory()
-    except AttributeError:
-        l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
+# # Render functions
+# def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
+#     """
+#     Render maze_obj with renderer_module
+#     Deprecated.
+#     """
+#     # Create renderer from RendererFactory
+#     try:
+#         factory = renderer_module.RendererFactory()
+#     except AttributeError:
+#         l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
 
-    # Create renderer and render if no additional args
-    if args.renderer_args is None:
-        l.debug("renderer_args is None, rendering without additional args...")
-        if not factory.create_renderer({}).render(maze_obj):
-            l.error("Couldn't render: renderer returned false")
+#     # Create renderer and render if no additional args
+#     if args.renderer_args is None:
+#         l.debug("renderer_args is None, rendering without additional args...")
+#         if not factory.create_renderer({}).render(maze_obj):
+#             l.error("Couldn't render: renderer returned false")
 
-        return
+#         return
 
-    # Find additional args and parse them
-    parsed_json = {}
+#     # Find additional args and parse them
+#     parsed_json = {}
 
-    # Parse as JSON
-    try:
-        l.debug("Trying to parse additional args with json.loads...")
-        parsed_json = json.loads(args.renderer_args)
-    except json.JSONDecodeError:
-        l.info("Couldn't parse renderer args as JSON, trying to parse as file...", exc_info=True)
-    else:
-        l.debug("Parsing successful!")
-        if not factory.create_renderer(parsed_json).render(maze_obj):
-            l.error("Couldn't render: renderer returned false")
+#     # Parse as JSON
+#     try:
+#         l.debug("Trying to parse additional args with json.loads...")
+#         parsed_json = json.loads(args.renderer_args)
+#     except json.JSONDecodeError:
+#         l.info("Couldn't parse renderer args as JSON, trying to parse as file...", exc_info=True)
+#     else:
+#         l.debug("Parsing successful!")
+#         if not factory.create_renderer(parsed_json).render(maze_obj):
+#             l.error("Couldn't render: renderer returned false")
 
-        return
+#         return
 
-    # Parse as file
-    try:
-        l.debug("Trying to open file and parse its contents...")
-        with open(args.renderer_args, "r", encoding="utf8") as file:
-            try:
-                l.debug("Trying to parse contents...")
-                parsed_json = json.loads(file)
-            except json.JSONDecodeError:
-                l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
-                return
+#     # Parse as file
+#     try:
+#         l.debug("Trying to open file and parse its contents...")
+#         with open(args.renderer_args, "r", encoding="utf8") as file:
+#             try:
+#                 l.debug("Trying to parse contents...")
+#                 parsed_json = json.loads(file)
+#             except json.JSONDecodeError:
+#                 l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
+#                 return
 
-            l.debug("Parsing successful")
-            if not factory.create_renderer(parsed_json).render(maze_obj):
-                l.error("Couldn't render: renderer returned false")
+#             l.debug("Parsing successful")
+#             if not factory.create_renderer(parsed_json).render(maze_obj):
+#                 l.error("Couldn't render: renderer returned false")
 
-            return
-    except OSError:
-        l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
+#             return
+#     except OSError:
+#         l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
 
 # Mode functions
 def render_mode():
     """
-    Called when render mode is selected.
-    """
+    # """
+    # Called when render mode is selected.
+    # """
 
-    # Check args
-    if args.file is None:
-        l.critical("--file argument required for render mode")
-        return
+    # # Check args
+    # if args.file is None:
+    #     l.critical("--file argument required for render mode")
+    #     return
 
-    if args.renderer is None:
-        l.critical("--renderer argument required for render mode")
-        return
+    # if args.renderer is None:
+    #     l.critical("--renderer argument required for render mode")
+    #     return
 
-    # Check renderer
-    renderer_module = import_renderer(args.renderer)
+    # # Check renderer
+    # renderer_module = import_renderer(args.renderer)
 
-    if not renderer_module:
-        l.critical("Couldn't import %s!", args.renderer)
-        return
+    # if not renderer_module:
+    #     l.critical("Couldn't import %s!", args.renderer)
+    #     return
 
-    # Check file
-    try:
-        with open(args.file, "r", encoding='utf8') as file:
-            maze_str = file.read()
-    except OSError:
-        l.critical("Couldn't open %s! Maybe the file doesn't exist?", args.file, exc_info=True)
-        return
+    # # Check file
+    # try:
+    #     with open(args.file, "r", encoding='utf8') as file:
+    #         maze_str = file.read()
+    # except OSError:
+    #     l.critical("Couldn't open %s! Maybe the file doesn't exist?", args.file, exc_info=True)
+    #     return
 
-    # Create maze object
-    try:
-        maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
-    except maze.MazeFactoryError:
-        l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
-        return
+    # # Create maze object
+    # try:
+    #     maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
+    # except maze.MazeFactoryError:
+    #     l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
+    #     return
 
-    render_obj(renderer_module, maze_obj)
+    # render_obj(renderer_module, maze_obj)
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
