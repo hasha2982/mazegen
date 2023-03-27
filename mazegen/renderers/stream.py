@@ -16,7 +16,7 @@ except ImportError:
 
     raise
 
-l = formatter.get_formatted_logger("StreamRenderer")
+l = formatter.get_formatted_logger("StreamRenderer") # TODO: This may not be forward compatible
 
 class StreamRenderer(BaseRenderer):
     """

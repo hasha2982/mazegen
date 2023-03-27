@@ -40,7 +40,7 @@ class Maze:
         self.end_x = end_x
         self.end_y = end_y
 
-class MazeFactoryError(Exception):
+class MazeFactoryError(Exception): # TODO: Use raise from instead of sub_exc
     """
     Raised when MazeFactory can't create a new Maze object
 
