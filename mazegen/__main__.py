@@ -4,7 +4,7 @@ Use mazegen -h for help.
 """
 
 import argparse
-import os
+#import os
 import textwrap # TODO: #24 textwrap.dedent?
 import importlib.util
 import pathlib
@@ -29,9 +29,6 @@ parser = argparse.ArgumentParser(
     description=textwrap.dedent("""
     Maze generator and solver written in Python.
     Modes:
-    list | l
-        list all available generators, solvers and renderers
-    
     render | r
         render .json maze file
     """)
@@ -135,67 +132,67 @@ def import_renderer(file: str):
 
     return module
 
-# List functions
-def list_renderers(directory: str) -> list:
-    """
-    Get all .py files in /renderers/ and check if they can be used as renderers
-    """
-    # TODO: Update docstring
+# # List functions
+# def list_renderers(directory: str) -> list:
+#     """
+#     Get all .py files in /renderers/ and check if they can be used as renderers
+#     """
+#     # TODO: Update docstring
 
-    renderers_dir = directory # TODO: fix this
+#     renderers_dir = directory # TODO: fix this
 
-    # Check if dir exists
-    if not pathlib.Path(directory).is_dir():
-        l.error("%s is not a directory. Skipping renderers...")
-        return [] # Return empty list, i.e. no renderers found.
+#     # Check if dir exists
+#     if not pathlib.Path(directory).is_dir():
+#         l.error("%s is not a directory. Skipping renderers...")
+#         return [] # Return empty list, i.e. no renderers found.
 
-    # List of all found .py files
-    py_files_list = []
+#     # List of all found .py files
+#     py_files_list = []
 
-    # Get all files and dirs in dir
-    for filename in os.listdir(renderers_dir):
-        l.debug("Analyzing %s", filename)
-        f = os.path.join(renderers_dir, filename)
+#     # Get all files and dirs in dir
+#     for filename in os.listdir(renderers_dir):
+#         l.debug("Analyzing %s", filename)
+#         f = os.path.join(renderers_dir, filename)
 
-        #print(f)
-        if os.path.isfile(f) and f.lower().endswith(".py"):
-            py_files_list.append(f)
-            l.debug("%s is a .py file, appending to list", f)
+#         #print(f)
+#         if os.path.isfile(f) and f.lower().endswith(".py"):
+#             py_files_list.append(f)
+#             l.debug("%s is a .py file, appending to list", f)
 
-    valid_modules_list = []
+#     valid_modules_list = []
 
-    # # Try to import and check them
-    # for file in py_files_list:
-    #     # Try to extract stem from path
-    #     name = pathlib.Path(file).stem
+#     # # Try to import and check them
+#     # for file in py_files_list:
+#     #     # Try to extract stem from path
+#     #     name = pathlib.Path(file).stem
 
-    #     # Import module
-    #     try:
-    #         spec = importlib.util.spec_from_file_location(name, file)
-    #         module = importlib.util.module_from_spec(spec)
-    #         spec.loader.exec_module(module)
-    #         l.debug("Successfully imported %s from %s", name, file)
-    #     except Exception as e: # pylint: disable=broad-exception-caught
-    #         l.debug("Can't import %s from %s: unknown error (%s). Skipping", name, file, e)
-    #         continue
+#     #     # Import module
+#     #     try:
+#     #         spec = importlib.util.spec_from_file_location(name, file)
+#     #         module = importlib.util.module_from_spec(spec)
+#     #         spec.loader.exec_module(module)
+#     #         l.debug("Successfully imported %s from %s", name, file)
+#     #     except Exception as e: # pylint: disable=broad-exception-caught
+#     #         l.debug("Can't import %s from %s: unknown error (%s). Skipping", name, file, e)
+#     #         continue
 
-    #     try:
-    #         _factory = module.RendererFactory()
-    #     except AttributeError as e:
-    #         l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
-    #         continue
-    for file in py_files_list:
-        module = import_renderer(file)
-        if not module:
-            l.debug("Check is not successful, skipping")
-            continue
+#     #     try:
+#     #         _factory = module.RendererFactory()
+#     #     except AttributeError as e:
+#     #         l.debug("Imported module has no RendererFactory. Skipping (%s)", e)
+#     #         continue
+#     for file in py_files_list:
+#         module = import_renderer(file)
+#         if not module:
+#             l.debug("Check is not successful, skipping")
+#             continue
 
-        # If we're here, then the imported module is probably valid.
-        # TODO: add version check? #12
+#         # If we're here, then the imported module is probably valid.
+#         # TODO: add version check? #12
 
-        valid_modules_list.append({"name": module.__name__, "file": file})
+#         valid_modules_list.append({"name": module.__name__, "file": file})
 
-    return valid_modules_list
+#     return valid_modules_list
 
 # Render functions
 def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
@@ -290,17 +287,17 @@ def render_mode():
 
     render_obj(renderer_module, maze_obj)
 
-def list_mode():
-    """
-    Called when render mode is selected.
-    """
-    ### Renderers
-    # l.debug(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
-    successful_renderers = list_renderers(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+# def list_mode():
+#     """
+#     Called when render mode is selected.
+#     """
+#     ### Renderers
+#     # l.debug(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
+#     successful_renderers = list_renderers(str(pathlib.Path(__file__).parent.resolve().joinpath("./renderers")))
 
-    print(f"Found {len(successful_renderers)} renderer(s) in /renderers/")
-    for renderer in successful_renderers:
-        print(f"\t{renderer['name']} ({renderer['file']})")
+#     print(f"Found {len(successful_renderers)} renderer(s) in /renderers/")
+#     for renderer in successful_renderers:
+#         print(f"\t{renderer['name']} ({renderer['file']})")
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
@@ -309,12 +306,12 @@ if __name__ == "__main__":
     #     sys.exit(1)
 
     match args.mode.lower():
-        case "list" | "l":
-            l.debug("list mode")
-            list_mode()
+        # case "list" | "l":
+        #     l.debug("list mode")
+        #     list_mode()
         case "render" | "r":
             l.debug("render mode")
             render_mode()
         case _:
-            l.critical("Unknown mode: %s. Supported modes: render, list. Try -h or --help", args.mode)
+            l.critical("Unknown mode: %s. Supported modes: render. Try -h or --help", args.mode)
     
