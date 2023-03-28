@@ -40,13 +40,13 @@ class Maze:
         self.end_x = end_x
         self.end_y = end_y
 
-class MazeFactoryError(Exception):
+class MazeFactoryError(Exception): # TODO: Use raise from instead of sub_exc
     """
     Raised when MazeFactory can't create a new Maze object
 
     Attributes
-        message - The message. Will include sub_exc in it.
-        sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
+        * message - The message. Will include sub_exc in it.
+        * sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
     """
 
     def __init__(self, message: str = "", sub_exc: Exception = Exception) -> None:

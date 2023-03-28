@@ -6,8 +6,8 @@ import sys
 #import json
 
 try:
-    from mazegen.lib.renderer_api.base import BaseRenderer
-    from mazegen.lib.renderer_api.base import RendererFactory as BaseRendererFactory
+    from mazegen.lib.rendering.base import BaseRenderer
+    from mazegen.lib.rendering.base import RendererFactory as BaseRendererFactory
 
     from mazegen.lib.maze import Maze
     from mazegen.lib.logging import formatter
@@ -16,7 +16,7 @@ except ImportError:
 
     raise
 
-l = formatter.get_formatted_logger("StreamRenderer")
+l = formatter.get_formatted_logger("StreamRenderer") # TODO: This may not be forward compatible
 
 class StreamRenderer(BaseRenderer):
     """
