@@ -20,26 +20,25 @@ def import_renderer(path: str):
     Returns
         * Module, if the import was successful and all the checks passed
         * False, if the import was not successful or not all checks passed
-        * Exception, if an exception has occurred
     """
 
     # Extract stem from path
     name = Path(path).stem
 
     # Import module
-    try:
-        spec = importlib.util.spec_from_file_location(name, path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-    except Exception as e: # pylint: disable=broad-exception-caught
-        return e # TODO: maybe don't return the exceptions?
+    #try:
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    #except Exception as e: # pylint: disable=broad-exception-caught
+    #    return e
 
     try:
         _factory = module.RendererFactory()
     except AttributeError:
         return False
-    except Exception as e: # pylint: disable=broad-exception-caught
-        return e
+    #except Exception as e: # pylint: disable=broad-exception-caught
+    #    return e
 
     return module
 
