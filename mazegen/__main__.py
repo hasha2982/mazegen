@@ -3,11 +3,10 @@ Maze generator and solver written in Python
 Use mazegen -h for help.
 """
 
+# TODO: Import organization
+
 import argparse
-#import os
 import textwrap # TODO: #24 textwrap.dedent?
-import importlib.util
-import pathlib
 import json
 
 import colorama as co
@@ -15,6 +14,7 @@ import colorama as co
 try:
     from mazegen.lib.logging import formatter as custom_formatter
     from mazegen.lib import maze
+    from mazegen.lib.rendering import toolkit as rendering_tk
 except (ImportError, ModuleNotFoundError) as exc:
     print(f"Can't import mazegen! Please install mazegen with pip or add it to PYTHONPATH before using ({exc})")
     raise
@@ -105,129 +105,82 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 # l.error("Error")
 # l.critical("Critical")
 
-# Check functions
-# def import_renderer(file: str):
-#     """
-#     Try to import a module as a renderer and also check it.
-#     Deprecated.
-#     """
-
-#     # Try to extract stem from path
-#     name = pathlib.Path(file).stem
-
-#     # Import module
-#     try:
-#         spec = importlib.util.spec_from_file_location(name, file)
-#         module = importlib.util.module_from_spec(spec)
-#         spec.loader.exec_module(module)
-#         l.debug("Successfully imported %s from %s", name, file)
-#     except Exception as e: # pylint: disable=broad-exception-caught
-#         l.debug("Can't import %s from %s: unknown error (%s)", name, file, e)
-#         return False
-
-#     try:
-#         _factory = module.RendererFactory()
-#     except AttributeError as e:
-#         l.debug("Imported module has no RendererFactory. (%s)", e)
-#         return False
-
-#     return module
-
-
-# # Render functions
-# def render_obj(renderer_module, maze_obj: maze.Maze): # TODO: DRY principle
-#     """
-#     Render maze_obj with renderer_module
-#     Deprecated.
-#     """
-#     # Create renderer from RendererFactory
-#     try:
-#         factory = renderer_module.RendererFactory()
-#     except AttributeError:
-#         l.critical("Can't render: Renderer has no RendererFactory", exc_info=True)
-
-#     # Create renderer and render if no additional args
-#     if args.renderer_args is None:
-#         l.debug("renderer_args is None, rendering without additional args...")
-#         if not factory.create_renderer({}).render(maze_obj):
-#             l.error("Couldn't render: renderer returned false")
-
-#         return
-
-#     # Find additional args and parse them
-#     parsed_json = {}
-
-#     # Parse as JSON
-#     try:
-#         l.debug("Trying to parse additional args with json.loads...")
-#         parsed_json = json.loads(args.renderer_args)
-#     except json.JSONDecodeError:
-#         l.info("Couldn't parse renderer args as JSON, trying to parse as file...", exc_info=True)
-#     else:
-#         l.debug("Parsing successful!")
-#         if not factory.create_renderer(parsed_json).render(maze_obj):
-#             l.error("Couldn't render: renderer returned false")
-
-#         return
-
-#     # Parse as file
-#     try:
-#         l.debug("Trying to open file and parse its contents...")
-#         with open(args.renderer_args, "r", encoding="utf8") as file:
-#             try:
-#                 l.debug("Trying to parse contents...")
-#                 parsed_json = json.loads(file)
-#             except json.JSONDecodeError:
-#                 l.critical("File opened successfully, but the contents couldn't be parsed.", exc_info=True)
-#                 return
-
-#             l.debug("Parsing successful")
-#             if not factory.create_renderer(parsed_json).render(maze_obj):
-#                 l.error("Couldn't render: renderer returned false")
-
-#             return
-#     except OSError:
-#         l.critical("Couldn't render: Could't open file '%s'. Maybe the file doesn't exist?", args.renderer_args, exc_info=True)
-
 # Mode functions
 def render_mode():
+    """Called when render mode is selected. Should not be called from outside __main__.py
     """
-    # """
-    # Called when render mode is selected.
-    # """
 
-    # # Check args
-    # if args.file is None:
-    #     l.critical("--file argument required for render mode")
-    #     return
+    # Check if required args are set
+    if (args.file is None) or (args.renderer is None):
+        if args.file is None:
+            l.critical("--file argument required for render mode")
+        if args.renderer is None:
+            l.critical("--renderer argument required for render mode")
 
-    # if args.renderer is None:
-    #     l.critical("--renderer argument required for render mode")
-    #     return
+        return
 
-    # # Check renderer
-    # renderer_module = import_renderer(args.renderer)
+    # Import renderer
+    try:
+        renderer = rendering_tk.import_renderer(args.renderer)
+    except ModuleNotFoundError:
+        l.critical("Can't render: renderer '%s' not found", args.renderer, exc_info=True)
+        return
+    except ImportError:
+        l.critical("Can't render: couldn't import renderer '%s'", args.renderer, exc_info=True)
+        return
+    except FileNotFoundError:
+        l.critical("Can't render: Couldn't import renderer: file '%s' does not exist", args.renderer, exc_info=True)
+        return
 
-    # if not renderer_module:
-    #     l.critical("Couldn't import %s!", args.renderer)
-    #     return
+    if not renderer:
+        l.critical("Can't render: module '%s' can't be used as a renderer")
+        return
+    
+    # Check maze file
+    try:
+        with open(args.file, "r", encoding="utf8") as file:
+            maze_json = file.read()
+    except FileNotFoundError:
+        l.critical("Can't render: Maze file '%s' not found", args.file, exc_info=True)
+        return
+    except OSError:
+        l.critical("Can't render: Couldn't open maze file '%s'", args.file, exc_info=True)
+        return
 
-    # # Check file
-    # try:
-    #     with open(args.file, "r", encoding='utf8') as file:
-    #         maze_str = file.read()
-    # except OSError:
-    #     l.critical("Couldn't open %s! Maybe the file doesn't exist?", args.file, exc_info=True)
-    #     return
+    # Parse Maze object
+    try:
+        maze_obj = maze.MazeFactory().init_from_json_str(maze_json, args.ignore_version)
+    except maze.MazeFactoryError:
+        l.critical("Can't render: Couldn't create a Maze object", exc_info=True)
+        return
+    
+    # Parse additional args
+    if args.renderer_args is None:
+        additional_args = {}
+    else:
+        # Try to parse as JSON first
+        try:
+            additional_args = json.loads(args.renderer_args)
+        except json.JSONDecodeError:
+            l.info("Couldn't parse '%s' as a JSON string. Parsing as a JSON file...", exc_info=True)
 
-    # # Create maze object
-    # try:
-    #     maze_obj = maze.MazeFactory().init_from_json_str(maze_str, args.ignore_version)
-    # except maze.MazeFactoryError:
-    #     l.critical("Couldn't convert JSON file to Maze object", exc_info=True)
-    #     return
+            # Parse as file
+            try:
+                with open(args.renderer_args, "r", encoding="utf8") as file:
+                    renderer_args_file = file.read()
+                    try:
+                        additional_args = json.loads(renderer_args_file)
+                    except json.JSONDecodeError:
+                        l.critical("Couldn't parse renderer args: File opened successfully, but the contents couldn't be parsed.", exc_info=True)
+            except FileNotFoundError:
+                l.critical("Couldn't parse renderer args: file '%s' not found", args.renderer_args)
+                return
 
-    # render_obj(renderer_module, maze_obj)
+    try:
+        rendering_tk.render_maze_obj(renderer, maze_obj, additional_args)
+    except rendering_tk.RenderingError as e:
+        l.critical("RenderingError: %s", e)
+        return
 
 if __name__ == "__main__":
     ## Not required now since mode is positional
