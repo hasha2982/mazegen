@@ -19,9 +19,15 @@ def import_renderer(path: str):
     
     Returns
         * Module, if the import was successful and all the checks passed
-        * False, if the import was not successful or not all checks passed
+        * False, if not all checks passed
+    
+    Raises
+        * FileNotFoundError - if file from path does not exist
     """
 
+    if not Path(path).is_file():
+        raise FileNotFoundError(f"File {path} does not exist")
+    
     # Extract stem from path
     name = Path(path).stem
 
