@@ -40,7 +40,7 @@ parser.add_argument(
     "-V", "--verbose",
     default="WARNING",
     type=str,
-    help="set verbosity level. defaults to WARNING. [NOTSET|DEBUG|INFO|WARNING|ERROR|CRITICAL]"
+    help="set verbosity level. defaults to WARNING. available: NOTSET|DEBUG|INFO|WARNING|ERROR|CRITICAL"
 )
 
 # All
@@ -51,18 +51,18 @@ parser.add_argument(
 # )
 parser.add_argument(
     "mode",
-    help="choose a mode (render/generate/solve)"
+    help="selects mode. available: render/r"
 )
 
 # Render/solve
 parser.add_argument(
     "-f", "--file",
     type=str,
-    help=".json maze file to solve/render (only render/solve)"
+    help="path to .json maze file to solve/render (only render/solve modes)"
 )
 parser.add_argument(
     "--ignore-version",
-    help="ignore the maze json file version. might cause errors (only render/solve)",
+    help="ignore the maze .json file version. might cause errors (only render/solve modes)",
     action='store_true'
 )
 
@@ -70,13 +70,13 @@ parser.add_argument(
 parser.add_argument(
     "-r", "--renderer",
     type=str,
-    help="rendering method"
+    help="path to the rendering module"
 )
 
 parser.add_argument(
     "-R", "--renderer-args",
     type=str,
-    help="additional arguments for the renderer. check the renderer docs for supported renderer args."
+    help="additional arguments for the renderer. check the renderer docs for supported renderer args. make sure to escape characters, like quotes"
 )
 
 args = parser.parse_args()
