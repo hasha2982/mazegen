@@ -163,7 +163,7 @@ def render_mode():
         try:
             additional_args = json.loads(args.renderer_args)
         except json.JSONDecodeError:
-            l.info("Couldn't parse '%s' as a JSON string. Parsing as a JSON file...", exc_info=True)
+            l.info("Couldn't parse '%s' as a JSON string. Parsing as a JSON file...", args.renderer_args, exc_info=True)
 
             # Parse as file
             try:
@@ -175,6 +175,9 @@ def render_mode():
                         l.critical("Couldn't parse renderer args: File opened successfully, but the contents couldn't be parsed.", exc_info=True)
             except FileNotFoundError:
                 l.critical("Couldn't parse renderer args: file '%s' not found", args.renderer_args)
+                return
+            except OSError:
+                l.critical("Couldn't parse renderer args: couldn't open file '%s'", args.renderer_args, exc_info=True)
                 return
 
     try:
