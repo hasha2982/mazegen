@@ -108,8 +108,7 @@ match args.verbose.upper(): # the type of flag is str, so we're sure it has .upp
 
 # Mode functions
 def render_mode():
-    """Called when render mode is selected. Should not be called from outside __main__.py
-    """
+    """Called when render mode is selected. Should not be called from outside __main__.py"""
 
     # Check if required args are set
     if (args.file is None) or (args.renderer is None):
