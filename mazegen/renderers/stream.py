@@ -3,7 +3,6 @@ This module contains a Stream Renderer for mazegen
 """
 
 import sys
-#import json
 
 try:
     from mazegen.lib.rendering.base import BaseRenderer
@@ -16,8 +15,9 @@ except ImportError:
 
     raise
 
-l = formatter.get_formatted_logger("StreamRenderer") # TODO: This may not be forward compatible
+l = formatter.get_formatted_logger("StreamRenderer") # This may not be forward compatible
 
+# TODO: #28 Better docstrings
 class StreamRenderer(BaseRenderer):
     """
     Renderer for streams (stdout, etc.)

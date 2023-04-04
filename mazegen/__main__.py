@@ -3,7 +3,7 @@ Maze generator and solver written in Python
 Use mazegen -h for help.
 """
 
-# TODO: Import organization
+# TODO: #26 Import organization
 
 import argparse
 import textwrap # TODO: #24 textwrap.dedent?
@@ -23,6 +23,7 @@ co.init() # Init colorama
 
 LATEST_MANIFEST = 0 # Latest supported manifest version.
 
+# TODO: #27 Rewrite argument help
 parser = argparse.ArgumentParser(
     prog="mazegen",
     formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -135,7 +136,7 @@ def render_mode():
     if not renderer:
         l.critical("Can't render: module '%s' can't be used as a renderer")
         return
-    
+
     # Check maze file
     try:
         with open(args.file, "r", encoding="utf8") as file:
@@ -153,7 +154,7 @@ def render_mode():
     except maze.MazeFactoryError:
         l.critical("Can't render: Couldn't create a Maze object", exc_info=True)
         return
-    
+
     # Parse additional args
     if args.renderer_args is None:
         additional_args = {}
