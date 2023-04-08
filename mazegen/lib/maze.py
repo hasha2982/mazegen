@@ -1,12 +1,22 @@
-"""
-This module contains the Maze class, which represents a maze.
-"""
+"""This module contains the Maze class, which represents a maze."""
 
 import json
 
 class Maze:
-    """
-    This class represents a maze.
+    """This class represents a maze.
+    
+    Attributes
+        * width - int: the width of the maze in tiles
+        * height - int: the height of the maze in tiles
+        * rows - dict: dictionary with multiple items, representing rows. each item
+          consists of row's id (y coordinate) as key and a dictionary as value, which
+          consists of tile's id (x coordinate) as key and a boolean as value.
+          (true for empty tile, false for wall tile)
+          rows[5][3] will return the tile at x=3;y=5
+        * start_x - int: the X coordinate of the start tile
+        * start_y - int: the Y coordinate of the start tile
+        * end_x - int: the X coordinate of the finish (end) tile
+        * end_y - int: the Y coordinate of the finish (end) tile    
     """
     # Defines the width and the height of the maze, including the border
     width = 0
@@ -15,7 +25,7 @@ class Maze:
     ### Example
     # rows = {
     #   0: {
-    #       1: true # true for empty
+    #       0: true # true for empty
     #   }
     # }
     rows = {}
@@ -29,6 +39,21 @@ class Maze:
     end_y = 0
 
     def __init__(self, rows: dict, width: int, height: int, start_x: int, start_y: int, end_x: int, end_y: int):
+        """Inits the Maze
+
+        Attributes
+            * rows - dict: dictionary with multiple items, representing rows. each item
+              consists of row's id (y coordinate) as key and a dictionary as value, which
+              consists of tile's id (x coordinate) as key and a boolean as value.
+              (true for empty tile, false for wall tile)
+            * width - int: the width of the maze in tiles
+            * height - int: the height of the maze in tiles
+            * start_x - int: the X coordinate of the start tile
+            * start_y - int: the Y coordinate of the start tile
+            * end_x - int: the X coordinate of the finish (end) tile
+            * end_y - int: the Y coordinate of the finish (end) tile
+        """
+
         self.rows = rows
 
         self.width = width
@@ -45,11 +70,17 @@ class MazeFactoryError(Exception): # TODO: Use raise from instead of sub_exc
     Raised when MazeFactory can't create a new Maze object
 
     Attributes
-        * message - The message. Will include sub_exc in it.
-        * sub_exc - The exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
+        * message: str - the message. will include sub_exc in it.
+        * sub_exc: Exception - the exception that could be raised instead of this one (TypeError when JSON value has an inappropriate type)
     """
 
     def __init__(self, message: str = "", sub_exc: Exception = Exception) -> None:
+        """Inits the MazeFactoryError
+
+        Arguments
+            * message: str - the exception message
+            * sub_exc: Exception - the exception that could be raised instead of this one
+        """
         self.sub_exc = sub_exc
 
         if sub_exc is not Exception:
@@ -60,13 +91,21 @@ class MazeFactoryError(Exception): # TODO: Use raise from instead of sub_exc
         super().__init__(self.message)
 
 class MazeFactory:
-    """
-    Contains methods that are used to construct Maze objects.
-    """
-    def init_from_json_str(self, json_string, ignore_manifest_version = False):  # FIXME: Limit the amount of data to be parsed! (#13)
+    """Constructs Maze objects."""
+
+    def init_from_json_str(self, json_string: str, ignore_manifest_version = False):
+        """Parse the JSON maze file and convert it into a Maze object
+
+        Arguments
+            * json_string: str - the JSON maze file that will be converted
+            * ignore_manifest_version: bool - if true, don't raise an exception if
+              the manifest version is not supported by this mazegen version. might cause
+              unexpected behavior.
+        
+        Raises
+            * MazeFactoryError if any error occurs. See sub_exc and exception message for more info.
         """
-        Initialize a new Maze object by parsing a JSON string.
-        """
+
         rows = {}
 
         # width = 0
