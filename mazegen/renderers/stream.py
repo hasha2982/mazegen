@@ -1,5 +1,45 @@
-"""
-This module contains a Stream Renderer for mazegen
+"""Stream Renderer for mazegen
+
+Used for rendering mazes to stream (files, stdout, etc.)
+
+Supported renderer arguments
+    NOTE: When passing JSON renderer arguments as command line arguments, make
+    sure you escape characters. (like quotes)
+    * wall_char: string - character(s) that will be used for wall tiles.
+      defaults to '█' (U+2588 Full block)
+    * empty_char: string - character(s) that will be used for empty tiles.
+      defaults to ' ' (space)
+    * start_char: string - character(s) that will be used for starting tiles.
+      defaults to 'S'
+    * end_char: string - character(s) that will be used for finish tiles.
+      defaults to 'E'
+    * solution_char: string - character(s) that will be used for the solution path.
+      defaults to '.'
+    * unknown_char: string - character(s) that will be used for error (unknown) tiles.
+      defaults to '?'
+
+License
+    MIT License
+    
+    Copyright (c) 2023 hasha2982
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 """
 
 import sys
@@ -19,9 +59,7 @@ l = formatter.get_formatted_logger("StreamRenderer") # This may not be forward c
 
 # TODO: #28 Better docstrings
 class StreamRenderer(BaseRenderer):
-    """
-    Renderer for streams (stdout, etc.)
-    """
+    """Renderer for streams (stdout, etc.)"""
 
     # Characters to represent wall cells and empty cells
     wall_char = "█"
@@ -41,6 +79,16 @@ class StreamRenderer(BaseRenderer):
     stream = sys.stdout
 
     def __init__(self, wall_char = "█", empty_char = " ", start_char = "S", end_char = "E", solution_char = ".", unknown_char = "?"):
+        """Inits the StreamRenderer
+
+        Arguments
+            * wall_char: str - the character that will be used for wall tiles. defaults to '█' (U+2588 Full block)
+            * empty_char: str - the character that will be used for empty tiles. defaults to ' ' (space)
+            * start_char: str - the character that will be used for starting tiles. defaults to 'S'
+            * end_char: str - the character that will be used for finish tiles. defaults to 'E'
+            * solution_char: str - the character that will be used for the solution path. defaults to '.'
+            * unknown_char: str - the character that will be used for error (unknown) tiles. defaults to '?'
+        """
         self.wall_char = wall_char
         self.empty_char = empty_char
 
@@ -52,8 +100,13 @@ class StreamRenderer(BaseRenderer):
         self.unknown_char = unknown_char
 
     def maze_to_list(self, maze: Maze) -> list:
-        """
-        Go through all rows and cells of maze, render as strings representing rows, return list with strings
+        """Render each row of the Maze object as a string, return list with the rendered row strings.
+
+        Arguments
+            * maze: mazegen.lib.maze.Maze - the Maze object that will be rendered.
+        
+        Returns
+            * str[] - list with the rows of maze, rendered as strings.
         """
 
         # List with rendered rows as strings.
@@ -80,9 +133,12 @@ class StreamRenderer(BaseRenderer):
 
         return rows_list
 
-    def write_to_stream(self, stream, rows_list):
-        """
-        Write the rows list to stream.
+    def write_to_stream(self, stream, rows_list: list):
+        """Iterate through rows_list and write each element to stream, then close the stream if it's not stdout or stderr
+        
+        Arguments
+            * stream - the stream that will be used for rendering
+            * rows_list: str[] - list of strings, each element will be written to stream
         """
         writable = False
 
@@ -109,8 +165,13 @@ class StreamRenderer(BaseRenderer):
             stream.close()
 
     def render(self, maze_obj):
-        """
-        Render the Maze object
+        """Render the maze object
+        
+        Arguments
+            * maze_obj: mazegen.lib.maze.Maze - the Maze object to render
+        
+        Returns
+            * True
         """
         rows_list = self.maze_to_list(maze_obj)
 
@@ -119,12 +180,15 @@ class StreamRenderer(BaseRenderer):
         return True
 
 class RendererFactory(BaseRendererFactory):
-    """
-    Parse args and create StreamRenderer
-    """
+    """This class is used for creating StreamRenderer objects and applying renderer arguments to these objects"""
     def create_renderer(self, args: dict = None) -> StreamRenderer:
-        """
-        Apply args to renderer and return it
+        """Create StreamRenderer object and apply any renderer args
+
+        Arguments
+            * args: dict - dictionary with the renderer args. not required
+
+        Returns
+            * StreamRenderer with any applied renderer args
         """
         #parsed_args = json.loads(args)
 
