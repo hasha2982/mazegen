@@ -1,16 +1,28 @@
-"""
-This module contains a custom formatter for logging.
-"""
+"""This module contains a custom formatter for logging."""
 
 import sys
 import logging
 from colorama import Fore, Style
 
 class CustomFormatter(logging.Formatter):
-    """
-    A class that inherits logging.Formatter. Used to format LogRecords
-    """
-    def format(self, record):
+    """This class is used to format LogRecords. Inherited from logging.Formatter"""
+    def format(self, record: logging.LogRecord) -> str:
+        """Return a formatted LogRecord as a string
+        
+        Example output
+            * root, WARNING:
+              [W] Warning
+            * foo, ERROR:
+              (foo) [ERR] Error
+            * bar, NOTSET:
+              (bar) [N/A] NOTSET
+
+        Arguments
+            * record: logging.LogRecord - the record that will be formatted
+        
+        Returns
+            * str - the formatted string
+        """
         # [E] Error
         # (module) [W] Warning
         log = "" # Record
@@ -40,8 +52,13 @@ class CustomFormatter(logging.Formatter):
         return log
 
 def get_formatted_logger(name = "root"):
-    """
-    Return a named logger that already has a StreamHandler attached to it.
+    """Return a named logger with a StreamHandler attached to it.
+
+    Arguments
+        * name: str - logger's name (defaults to "root")
+    
+    Returns
+        * named Logger with CustomFormatter and propagate = False 
     """
     logging_handler = logging.StreamHandler(sys.stdout)
     logging_handler.setFormatter(CustomFormatter())
